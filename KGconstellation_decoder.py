@@ -406,7 +406,7 @@ class Runner(object):
 
         val_results = {}
         val_results['mrr'] = 0
-        for epoch in range(100):
+        for epoch in range(self.p.max_epochs):
             train_loss,sub_aggregator,rel_aggregator = self.run_epoch(epoch, val_mrr)
             if ((epoch + 1) % 1 == 0):
                 val_results = self.evaluate('valid', epoch)
