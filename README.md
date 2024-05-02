@@ -8,7 +8,7 @@ This is the official implementation of the paper ["CPa-WAC: Constellation Partit
 
 Star ⭐ us if you like it!
 
-![Architecture](assets/Architecture.png)&nbsp;
+![Architecture](assets/architecture.png)&nbsp;
 
 
 ## Table of contents
