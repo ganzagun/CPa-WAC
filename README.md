@@ -103,10 +103,10 @@ For license details, see [LICENSE](LICENSE).
 If you find our work useful, please cite the following paper:
 
 ```
-@inproceedings{modal2024cpawac,
-  author="Sudipta Modak1 and Aakarsh Malhotra2 and Sarthak Malik and Anil Surisetty and Esam Abdel-Raheem1}",
+@inproceedings{modak2024cpawac,
+  author="Modak, Sudipta  and Malhotra, Aakarsh  and Malik, Sarthak  and Surisetty, Anil  and Abdel-Raheem, Esam}",
   title="CPa-WAC: Constellation Partitioning-based Scalable Weighted Aggregation Composition for Knowledge Graph Embedding",
-  booktitle="IJCAI",
-  year="2023"
+  booktitle="IJCAI: International Joint Conferences on Artificial Intelligence",
+  year="2024"
 }
 ```
