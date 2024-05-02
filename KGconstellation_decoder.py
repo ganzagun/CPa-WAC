@@ -77,12 +77,13 @@ class MergingBase(BaseKG):
 class D1_MLP(MergingBase):
     def __init__(self, params=None):
         super(self.__class__, self).__init__(params.num_rel,params.num_ent, params)
+        self.p = params
         self.embed_dim = self.p.embed_dim
         
         self.downsample=params.downsample
         self.bn0 = torch.nn.BatchNorm1d(1)
-        self.bn1 = torch.nn.BatchNorm1d(self.p.embed_dim*count*2)
-        self.bn2 = torch.nn.BatchNorm1d(self.p.embed_dim*count) if self.downsample==0 else torch.nn.BatchNorm1d(self.p.embed_dim)
+        self.bn1 = torch.nn.BatchNorm1d(self.p.embed_dim*self.p.cluster_total*2)
+        self.bn2 = torch.nn.BatchNorm1d(self.p.embed_dim*self.p.cluster_total) if self.downsample==0 else torch.nn.BatchNorm1d(self.p.embed_dim)
         
         
         self.hidden_drop = torch.nn.Dropout(self.p.hid_drop)
@@ -90,17 +91,17 @@ class D1_MLP(MergingBase):
         
         
         ## Two dense layers
-        self.dimensions=count*self.embed_dim if self.downsample==0 else self.embed_dim
-        self.fc1 = torch.nn.Linear(self.dimensions, 2*count*self.embed_dim)
-        self.fc2 = torch.nn.Linear(2*count*self.embed_dim, self.dimensions)
+        self.dimensions=self.p.cluster_total*self.embed_dim if self.downsample==0 else self.embed_dim
+        self.fc1 = torch.nn.Linear(self.dimensions, 2*self.p.cluster_total*self.embed_dim)
+        self.fc2 = torch.nn.Linear(2*self.p.cluster_total*self.embed_dim, self.dimensions)
 
 
     def forward(self, sub, rel, neg_ents=None):
         sub_emb2, rel_emb2, all_ent,final_rel= self.forward_base(sub, rel, self.hidden_drop, self.feature_drop,self.downsample)
         
-        sub_emb2 = sub_emb2.view(-1, 1, self.embed_dim*count) if self.downsample==0 else sub_emb2.view(-1, 1, self.embed_dim)
+        sub_emb2 = sub_emb2.view(-1, 1, self.embed_dim*self.p.cluster_total) if self.downsample==0 else sub_emb2.view(-1, 1, self.embed_dim)
 
-        rel_emb2 = rel_emb2.view(-1, 1, self.embed_dim*count) if self.downsample==0 else rel_emb2.view(-1, 1, self.embed_dim)
+        rel_emb2 = rel_emb2.view(-1, 1, self.embed_dim*self.p.cluster_total) if self.downsample==0 else rel_emb2.view(-1, 1, self.embed_dim)
         
         
         stk_inp=torch.mul(sub_emb2, rel_emb2)
@@ -451,7 +452,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--bias', dest='bias', action='store_true', help='Whether to use bias in the model')
     parser.add_argument('--num_nodes', dest='num_nodes',default=40943,type=int , help='Number of nodes in graph')
-    parser.add_argument('--num_relation', dest='num_relation',default=18,type=int , help='Number of relations in graph')
+    parser.add_argument('--num_relation', dest='num_relation',default=11,type=int , help='Number of relations in graph')
     parser.add_argument('--embed_dim', dest='embed_dim', default=200, type=int,
                         help='Embedding dimension to give as input to score function')
 
@@ -469,6 +470,7 @@ if __name__ == '__main__':
     parser.add_argument('--cluster_total', dest='cluster_total', default=2, type=int, help='Total number of clusters')
         
     args = parser.parse_known_args()[0]
+    print(args)
     
 
 
@@ -483,29 +485,23 @@ if __name__ == '__main__':
     
     cluster_ent = []
     cluster_rel = []
-    for cluster_num in range(2,args.cluster_total+1):
+    for cluster_num in range(2,args.cluster_total+2):
         cluster_ent_tmp = torch.load( encoder_op_path+f'{cluster_num}_cluster_ent.pt')
         cluster_rel_tmp = torch.load(encoder_op_path+f'{cluster_num}_cluster_rel.pt')
         cluster_ent.append(cluster_ent_tmp)
         cluster_rel.append(cluster_rel_tmp)
         
-    cluster_ent = np.array(cluster_ent)
-    cluster_rel = np.array(cluster_rel)
-    
-    
+    cluster_path = './data/'+args.dataset+f'/{args.cluster_folder}/'
     label_path = cluster_path + 'labels.txt'
     label_prime=np.loadtxt(label_path, dtype=int)
-    main_ent = cluster_ent[0].detach().clone()
-    main_rel = cluster_rel[0].detach().clone()
+    main_ent = cluster_ent[0].clone()
+    main_rel = cluster_rel[0].clone()
 
     ## Concatenation of entity and relation embeddings from different clusters
     for i in range(1,len(cluster_ent)):
         main_ent=torch.cat((main_ent, cluster_ent[i]), 1)
         main_rel=torch.cat((main_rel, cluster_rel[i]),1)
         
-    for i in range(1,len(cluster_ent)):
-        main_ent = torch.cat((main_ent, cluster_ent[i]), 1)
-        main_rel = torch.cat((main_rel, cluster_rel[i]),1)
 
     args.main_ent = main_ent
     args.main_rel = main_rel
@@ -524,14 +520,4 @@ if __name__ == '__main__':
     
     
     
-    
-    
-    
-    
-    
-    
-# python KGconstellation_dencoder.py --dataset WN18RR --cluster_folder cluster_c2  --cluster_total 2 
-
-        
-   
 
