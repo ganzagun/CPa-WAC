@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 import random
 import gc
+import os
 
 
 
@@ -461,7 +462,7 @@ class Runner(object):
                     results['hits@{}'.format(k + 1)] = torch.numel(ranks[ranks <= (k + 1)]) + results.get(
                         'hits@{}'.format(k + 1), 0.0)
                 
-        aggregator1=np.array(aggregator1)
+        # aggregator1=np.array(aggregator1)
         return results,ranks2,aggregator1,sub.shape,values
     
     
@@ -527,7 +528,7 @@ class Runner(object):
                     results['hits@{}'.format(k + 1)] = torch.numel(ranks[ranks <= (k + 1)]) + results.get(
                         'hits@{}'.format(k + 1), 0.0)
                
-        aggregator2=np.array(aggregator2)
+        # aggregator2=np.array(aggregator2)
         return results,ranks2,aggregator2,sub.shape,values
     
     
@@ -615,7 +616,7 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='Parser For Arguments')
 
-    parser.add_argument('--dataset', dest='dataset',type=str, default='FB15k-237', help='Dataset to use, default: FB15k-237')
+    parser.add_argument('--dataset', dest='dataset',type=str, default='WN18RR', help='Dataset to use, default: FB15k-237')
     parser.add_argument('--opn', dest='opn', type=str, default='W_mult', help='Composition Operation to be used in D1')
     parser.add_argument('--batch', dest='batch_size', default=1024, type=int, help='Batch size')
     parser.add_argument('--test_batch', dest='test_batch_size', default=1024, type=int,
@@ -634,7 +635,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--bias', dest='bias', action='store_true', help='Whether to use bias in the model')
     parser.add_argument('--num_nodes', dest='num_nodes',default=40943,type=int , help='Number of nodes in graph')
-    parser.add_argument('--num_relation', dest='num_relation',default=18,type=int , help='Number of relations in graph')
+    parser.add_argument('--num_relation', dest='num_relation',default=11,type=int , help='Number of relations in graph')
     parser.add_argument('--embed_dim', dest='embed_dim', default=200, type=int,
                         help='Embedding dimension to give as input to score function')
 
@@ -664,19 +665,10 @@ if __name__ == '__main__':
     torch.manual_seed(args.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.seed)
-    import os
-
-    dir_path = './data/wn18/clusters'
-    count = 0
+   
     
-    ## Number of CLusters to be Trained on
-    for path in os.listdir(dir_path):
-        if os.path.isfile(os.path.join(dir_path, path)):
-            count += 1
-    count=int(count/3)
     cluster_ent = []
     cluster_rel=[]
-    print('File count:', count)
     
     start_time = time.time()
     print('cluster',args.cluster_num)
@@ -685,7 +677,7 @@ if __name__ == '__main__':
     end_time = time.time()
     elapsed_time = end_time - start_time
     print("Elapsed time: ", elapsed_time) 
-    print('end of training for cluster',x)
+    print('end of training for cluster', args.cluster_num)
     
     
     encoder_op_path = './data/'+args.dataset+f'/{args.cluster_folder}/encoder_output/'
@@ -693,8 +685,8 @@ if __name__ == '__main__':
         os.makedirs(encoder_op_path)
         
     print(f'Saving file at {encoder_op_path}')
-    torch.save(cluster_ent, encoder_op_path+f'{args.cluster_num}_cluster_ent.pt')
-    torch.save(cluster_rel, encoder_op_path+f'{args.cluster_num}_cluster_rel.pt')
+    torch.save(proper_sub_aggregator, encoder_op_path+f'{args.cluster_num}_cluster_ent.pt')
+    torch.save(proper_rel_aggregator, encoder_op_path+f'{args.cluster_num}_cluster_rel.pt')
     print(f'Embedding saved {args.cluster_num}')
 
 
