@@ -242,7 +242,7 @@ if __name__ == '__main__':
     parser.add_argument('--delta', dest='delta',type=int, default=40)
     parser.add_argument('--gamma', dest='gamma',type=int, default=1)
     parser.add_argument('--sigma', dest='sigma',type=int, default=18000)
-    parser.add_argument('--cluster_folder', dest='cluster folder',type=str, default='cluster_c2')
+    parser.add_argument('--cluster_folder', dest='cluster_folder',type=str, default='cluster_c2')
     
     args = parser.parse_known_args()[0]
     print(args)
