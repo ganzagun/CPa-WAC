@@ -6,8 +6,6 @@
 
 This is the official implementation of the paper ["CPa-WAC: Constellation Partitioning-based Scalable Weighted Aggregation Composition for Knowledge Graph Embedding"]([LINK]).
 
-Star ⭐ us if you like it!
-
 ![Architecture](assets/architecture.png)&nbsp;
 
 
