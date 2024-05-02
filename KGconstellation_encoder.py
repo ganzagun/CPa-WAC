@@ -615,7 +615,7 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='Parser For Arguments')
 
-    parser.add_argument('--dataset', dest='dataset',type=str, default='wn18/clusters', help='Dataset to use, default: FB15k-237')
+    parser.add_argument('--dataset', dest='dataset',type=str, default='FB15k-237', help='Dataset to use, default: FB15k-237')
     parser.add_argument('--opn', dest='opn', type=str, default='W_mult', help='Composition Operation to be used in D1')
     parser.add_argument('--batch', dest='batch_size', default=1024, type=int, help='Batch size')
     parser.add_argument('--test_batch', dest='test_batch_size', default=1024, type=int,
