@@ -89,7 +89,7 @@ python KGconstellation_encoder.py --dataset WN18RR --cluster_folder cluster_c2  
 
 
 ## Running Decoder
-Once embeddings generated for all the encoder, use the below command to run the decoder. The parameter **--cluster_total** signifies the total number of clusters.
+Once embeddings are generated for all the clusters, use the below command to run the decoder. The parameter **--cluster_total** signifies the total number of clusters.
 ```
 python KGconstellation_decoder.py --dataset WN18RR --cluster_folder cluster_c2  --cluster_total 2 
 ```
