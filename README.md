@@ -83,7 +83,7 @@ python CPa_WAC_clustering.py --dataset WN18RR --beta 200 --delta 40 --gamma 1 --
 ## Running Encoder 
 In order to run the encoders for a given cluster (specified by **--cluster_num**) use the following script, this will generate embeddings for all clusters and save them. The parameter **--cluster_num** signifies the cluster for which we need to run the encoder. 
 ```
-python KGconstellation_encoder.py --dataset WN18RR --cluster_folder cluster_c2  --cluster_num 2
+python KGconstellation_encoder.py --dataset WN18RR --cluster_folder cluster_c2 --num_nodes 40943 --num_relation 11 --cluster_num 2 --epoch 400
 ```
 
 
@@ -91,7 +91,7 @@ python KGconstellation_encoder.py --dataset WN18RR --cluster_folder cluster_c2  
 ## Running Decoder
 Once embeddings are generated for all the clusters, use the below command to run the decoder. The parameter **--cluster_total** signifies the total number of clusters.
 ```
-python KGconstellation_decoder.py --dataset WN18RR --cluster_folder cluster_c2  --cluster_total 2 
+python KGconstellation_decoder.py --dataset WN18RR --cluster_folder cluster_c2 --num_nodes 40943 --num_relation 11 --cluster_total 2 
 ```
 
 ## License
